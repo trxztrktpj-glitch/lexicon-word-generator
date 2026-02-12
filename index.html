@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lexicon Word Generator</title>
+</head>
+<body>
+    <h1>Welcome to the Lexicon Word Generator</h1>
+    <p>This tool helps you generate random words and expand your vocabulary!</p>
+    <button id="generate-btn">Generate Word</button>
+    <div id="word-container"></div>
+
+    <script>
+        const words = ['luminous', 'serendipity', 'sonder', 'effervescent', 'ephemeral'];
+        document.getElementById('generate-btn').onclick = function() {
+            const randomWord = words[Math.floor(Math.random() * words.length)];
+            document.getElementById('word-container').innerText = randomWord;
+        };
+    </script>
+</body>
+</html>

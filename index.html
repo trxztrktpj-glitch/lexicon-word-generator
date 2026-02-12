@@ -1,296 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
-<title>Lexicon — Word Generator & Cut-Up Engine</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
-<style>
-:root{--bg:#08080d;--sf:#101018;--sf2:#181824;--bd:#252535;--tx:#e8e6f0;--td:#8a87a0;--tf:#5a5870;--ac:#f0c040;--ac2:#e8a020;--ag:rgba(240,192,64,.12);--gn:#6ecf8e;--bl:#6ea8f0;--rs:#e87090;--pr:#a080e0;--tl:#50c8c0}
-*{margin:0;padding:0;box-sizing:border-box}
-html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);overflow-x:hidden;-webkit-font-smoothing:antialiased}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 25% 15%,rgba(240,192,64,.035) 0%,transparent 55%),radial-gradient(ellipse at 75% 85%,rgba(110,168,240,.025) 0%,transparent 55%);pointer-events:none;z-index:0}
-.app{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:1.8rem 1.2rem 4rem;max-width:760px;margin:0 auto}
-.hdr{text-align:center;margin-bottom:1.3rem}
-.logo{font-family:'Playfair Display',serif;font-size:2.3rem;font-weight:900;background:linear-gradient(135deg,var(--ac),var(--ac2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.sub{font-size:.72rem;color:var(--tf);margin-top:3px;letter-spacing:.2em;text-transform:uppercase}
-.tabs{display:flex;margin-bottom:1.5rem;background:var(--sf);border:1px solid var(--bd);border-radius:14px;overflow:hidden;width:100%;max-width:380px}
-.tab{flex:1;padding:.65rem .5rem;text-align:center;font-size:.78rem;font-weight:600;color:var(--td);cursor:pointer;border:none;background:none;font-family:inherit;transition:all .2s}
-.tab:hover{color:var(--tx)}
-.tab.on{background:var(--ag);color:var(--ac)}
-.pnl{display:none;width:100%}
-.pnl.on{display:flex;flex-direction:column;align-items:center}
-.sr{width:100%;display:flex;gap:8px;margin-bottom:1rem}
-.si{flex:1;padding:.65rem 1rem;font-family:inherit;font-size:.88rem;background:var(--sf);border:1px solid var(--bd);border-radius:12px;color:var(--tx);outline:none}
-.si:focus{border-color:var(--ac)}
-.si::placeholder{color:var(--tf)}
-.sb{padding:.65rem 1.1rem;font-family:inherit;font-size:.82rem;font-weight:600;color:var(--bg);background:linear-gradient(135deg,var(--ac),var(--ac2));border:none;border-radius:12px;cursor:pointer}
-.fl{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:1rem}
-.fc{padding:.35rem .75rem;font-size:.7rem;font-weight:500;color:var(--td);background:var(--sf);border:1px solid var(--bd);border-radius:100px;cursor:pointer;transition:all .2s;font-family:inherit;user-select:none}
-.fc:hover{border-color:var(--tf);color:var(--tx)}
-.fc.on{background:var(--ag);border-color:var(--ac);color:var(--ac)}
-.gb{display:flex;align-items:center;gap:.5rem;padding:.85rem 2rem;font-family:inherit;font-size:.95rem;font-weight:700;color:var(--bg);background:linear-gradient(135deg,var(--ac),var(--ac2));border:none;border-radius:100px;cursor:pointer;box-shadow:0 4px 20px rgba(240,192,64,.22);margin-bottom:1.5rem;transition:transform .2s}
-.gb:hover{transform:translateY(-2px) scale(1.02)}
-.gb:active{transform:scale(.97)}
-.gb.ld{pointer-events:none;opacity:.65}
-.wc{width:100%;background:var(--sf);border:1px solid var(--bd);border-radius:18px;padding:2rem 1.6rem;position:relative;overflow:hidden;animation:ci .35s ease}
-.wc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--ac),var(--bl),var(--pr),var(--tl))}
-.wm{display:flex;align-items:baseline;gap:.7rem;flex-wrap:wrap;margin-bottom:.3rem}
-.wt{font-family:'Playfair Display',serif;font-size:2.4rem;font-weight:900;line-height:1.1;color:#fff}
-.wp{font-family:'JetBrains Mono',monospace;font-size:.9rem;color:var(--tf)}
-.abtn{background:none;border:1px solid var(--bd);color:var(--td);border-radius:50%;width:32px;height:32px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:.9rem}
-.abtn:hover{border-color:var(--ac);color:var(--ac)}
-.pt{display:inline-block;padding:.2rem .65rem;font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;border-radius:100px;margin:.5rem .3rem .5rem 0}
-.pn{background:rgba(110,207,142,.12);color:var(--gn)}
-.pv{background:rgba(110,168,240,.12);color:var(--bl)}
-.pa{background:rgba(232,112,144,.12);color:var(--rs)}
-.pd{background:rgba(160,128,224,.12);color:var(--pr)}
-.px{background:rgba(138,135,160,.12);color:var(--td)}
-.sec{margin-top:1.2rem;padding-top:1.2rem;border-top:1px solid var(--bd)}
-.sl{font-size:.64rem;font-weight:700;text-transform:uppercase;letter-spacing:.18em;color:var(--tf);margin-bottom:.6rem}
-.df{font-size:.9rem;line-height:1.6;color:var(--tx);margin-bottom:.2rem}
-.dn{color:var(--ac);font-weight:700;margin-right:.2rem;font-family:'JetBrains Mono',monospace;font-size:.75rem}
-.ex{font-style:italic;color:var(--td);font-size:.82rem;padding-left:1rem;border-left:2px solid var(--bd);margin:.3rem 0 .5rem;line-height:1.5}
-.cl{display:flex;flex-wrap:wrap;gap:5px}
-.ch{padding:.25rem .6rem;font-size:.73rem;background:var(--sf2);border:1px solid var(--bd);border-radius:6px;color:var(--td);cursor:pointer;transition:all .2s;font-family:inherit}
-.ch:hover{border-color:var(--ac);color:var(--ac)}
-.et{font-size:.88rem;line-height:1.7;color:var(--td);font-family:'Playfair Display',serif;font-style:italic}
-.lk{font-size:.7rem;color:var(--tf);margin-top:1rem;display:block}
-.lk a{color:var(--bl);text-decoration:none}
-.lk a:hover{text-decoration:underline}
-.hi{width:100%;margin-top:1.5rem}
-.hl{display:flex;flex-wrap:wrap;gap:5px}
-.hw{padding:.28rem .65rem;font-size:.73rem;font-weight:500;background:var(--sf);border:1px solid var(--bd);border-radius:7px;color:var(--td);cursor:pointer;transition:all .2s}
-.hw:hover{border-color:var(--ac);color:var(--ac)}
-.es{text-align:center;padding:3rem 1.5rem}
-.ei{font-size:2.5rem;margin-bottom:.7rem;opacity:.35}
-.etx{color:var(--tf);font-size:.88rem;line-height:1.6}
-.ls{text-align:center;padding:2.5rem}
-.sp{width:34px;height:34px;border:3px solid var(--bd);border-top-color:var(--ac);border-radius:50%;animation:sn .7s linear infinite;margin:0 auto .7rem}
-.lt{color:var(--tf);font-size:.8rem}
-.cta{width:100%;min-height:150px;padding:1rem;font-family:inherit;font-size:.88rem;background:var(--sf);border:1px solid var(--bd);border-radius:14px;color:var(--tx);outline:none;resize:vertical;line-height:1.6}
-.cta:focus{border-color:var(--ac)}
-.cta::placeholder{color:var(--tf)}
-.cc{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:1rem;align-items:center;justify-content:center}
-.cb{padding:.6rem 1.4rem;font-family:inherit;font-size:.82rem;font-weight:600;border:none;border-radius:10px;cursor:pointer;transition:all .15s}
-.cb:active{transform:scale(.95)}
-.cp{color:var(--bg);background:linear-gradient(135deg,var(--ac),var(--ac2));box-shadow:0 3px 16px rgba(240,192,64,.2)}
-.cs{color:var(--td);background:var(--sf);border:1px solid var(--bd)!important}
-.cs:hover{border-color:var(--tf)!important;color:var(--tx)}
-.co{width:100%;min-height:100px;padding:1.4rem;background:var(--sf);border:1px solid var(--bd);border-radius:14px;position:relative;overflow:hidden}
-.co::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--pr),var(--tl),var(--rs))}
-.cr{font-family:'Playfair Display',serif;font-size:1.15rem;line-height:1.85;color:var(--tx);white-space:pre-wrap}
-.mc{padding:.35rem .8rem;font-size:.72rem;font-weight:500;color:var(--td);background:var(--sf);border:1px solid var(--bd);border-radius:100px;cursor:pointer;transition:all .2s;font-family:inherit}
-.mc.on{background:rgba(160,128,224,.12);border-color:var(--pr);color:var(--pr)}
-.ci2{font-size:.78rem;color:var(--tf);line-height:1.6;padding:1rem;background:var(--sf);border:1px solid var(--bd);border-radius:12px;margin-bottom:1.2rem}
-.ci2 strong{color:var(--td)}
-.ft{margin-top:2.5rem;text-align:center;font-size:.68rem;color:var(--tf);line-height:1.6;opacity:.45}
-.cattag{display:inline-block;padding:.18rem .55rem;font-size:.6rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;border-radius:6px;margin-left:.5rem;vertical-align:middle}
-.cat-sanskrit{background:rgba(240,160,40,.12);color:#e8a030}
-.cat-power{background:rgba(240,192,64,.12);color:var(--ac)}
-.cat-philosophy{background:rgba(110,168,240,.12);color:var(--bl)}
-.cat-rare{background:rgba(160,128,224,.12);color:var(--pr)}
-.cat-science{background:rgba(80,200,192,.12);color:var(--tl)}
-@keyframes ci{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-@keyframes sn{to{transform:rotate(360deg)}}
-@media(max-width:480px){.app{padding:1.3rem .9rem 3rem}.wt{font-size:2rem}.wc{padding:1.5rem 1.2rem}.logo{font-size:1.9rem}.cr{font-size:1.05rem}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lexicon Word Generator</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<div class="app">
-<header class="hdr"><div class="logo">Lexicon</div><div class="sub">Word Generator &amp; Cut-Up Engine</div></header>
-<div class="tabs">
-<button class="tab on" onclick="switchTab('words')">⚄ Words</button>
-<button class="tab" onclick="switchTab('cutup')">✂ Cut-Up</button>
-</div>
-
-<div class="pnl on" id="panel-words">
-<div class="sr">
-<input class="si" id="searchInput" type="text" placeholder="Look up any word..." onkeydown="if(event.key==='Enter')lookupWord(this.value.trim().toLowerCase())">
-<button class="sb" onclick="lookupWord(document.getElementById('searchInput').value.trim().toLowerCase())">Look up</button>
-</div>
-<div class="fl" id="filters"></div>
-<button class="gb" id="genBtn" onclick="generateWord()"><span id="dice">⚄</span> Generate Word</button>
-<div id="content">
-<div class="es"><div class="ei">📖</div><div class="etx">
-Tap <strong style="color:var(--tx)">Generate Word</strong> to discover a word<br>with definitions, etymology &amp; pronunciation.<br><br>
-<span style="font-size:.76rem">1,500+ words · Sanskrit · Philosophy · Power &amp; Insight · All with built-in definitions.</span>
-</div></div>
-</div>
-<div id="historySection" class="hi" style="display:none">
-<div class="sl">Recent Words</div>
-<div class="hl" id="historyList"></div>
-</div>
-</div>
-
-<div class="pnl" id="panel-cutup">
-<div class="ci2">
-<strong>The Cut-Up Technique</strong> — pioneered by Brion Gysin &amp; William S. Burroughs. Paste any text, choose a method, and slice it to reveal hidden meanings.<br><em>"When you cut into the present, the future leaks out."</em>
-</div>
-<div style="width:100%;margin-bottom:1rem">
-<textarea class="cta" id="cutupInput" placeholder="Paste or type text here... lyrics, a book passage, your own writing, anything."></textarea>
-</div>
-<div class="sl" style="text-align:center">Method</div>
-<div class="fl" style="margin-bottom:1rem" id="methodFilters"></div>
-<div class="cc">
-<button class="cb cp" onclick="performCutup()">✂ Cut It Up</button>
-<button class="cb cs" onclick="performCutup()">↻ Re-Cut</button>
-<button class="cb cs" id="copyBtn" onclick="copyOutput()">📋 Copy</button>
-<button class="cb cs" onclick="injectWords()">+ Inject Power Words</button>
-</div>
-<div id="cutupStats" style="font-size:.68rem;color:var(--tf);margin:0 0 1rem;text-align:center"></div>
-<div class="co" id="cutupOutput" style="display:none"><div class="cr" id="cutupResult"></div></div>
-</div>
-
-<div class="ft">Lexicon · Free &amp; Open · Works on iOS, Android &amp; Desktop</div>
-</div>
-
-<script>
-const LOCAL = {
-"ahimsa":{pos:"noun",cat:"sanskrit",defs:[{d:"Non-violence; the principle of not causing harm to any living being.",x:"Gandhi's philosophy was rooted in ahimsa."}],etym:"From Sanskrit अहिंसा (ahiṃsā)."},
-"ananda":{pos:"noun",cat:"sanskrit",defs:[{d:"Bliss; supreme joy.",x:null}],etym:"From Sanskrit आनन्द (ānanda)."},
-"atman":{pos:"noun",cat:"sanskrit",defs:[{d:"The true self or soul.",x:null}],etym:"From Sanskrit आत्मन् (ātman)."},
-"dharma":{pos:"noun",cat:"sanskrit",defs:[{d:"Cosmic law and order; righteous duty.",x:"Each person must follow their own dharma."}],etym:"From Sanskrit धर्म (dharma)."},
-"karma":{pos:"noun",cat:"sanskrit",defs:[{d:"Action; the cosmic law of cause and effect.",x:"He believed his good fortune was the result of positive karma."}],etym:"From Sanskrit कर्मन् (karman)."},
-"nirvana":{pos:"noun",cat:"sanskrit",defs:[{d:"The extinction of suffering; transcendent liberation.",x:null}],etym:"From Sanskrit निर्वाण (nirvāṇa)."},
-"yoga":{pos:"noun",cat:"sanskrit",defs:[{d:"Union; a system of physical, mental, and spiritual practices.",x:null}],etym:"From Sanskrit योग (yoga)."},
-"epistemology":{pos:"noun",cat:"philosophy",defs:[{d:"The branch of philosophy concerned with the nature and limits of knowledge.",x:null}],etym:"From Greek epistēmē + logos."},
-"ontology":{pos:"noun",cat:"philosophy",defs:[{d:"The philosophical study of the nature of being and existence.",x:null}],etym:"From Greek on + logos."},
-"apotheosis":{pos:"noun",cat:"power",defs:[{d:"The highest point of development; elevation to divine status.",x:null}],etym:"From Greek apotheōsis."},
-"gnosis":{pos:"noun",cat:"power",defs:[{d:"Direct spiritual knowledge; intuitive apprehension of truth.",x:null}],etym:"From Greek gnōsis."},
-"petrichor":{pos:"noun",cat:"rare",defs:[{d:"The earthy smell when rain falls on dry ground.",x:null}],etym:"Coined 1964: Greek petra + ichor."},
-"saudade":{pos:"noun",cat:"rare",defs:[{d:"Deep emotional longing for something absent.",x:null}],etym:"From Portuguese/Galician."},
-"serendipity":{pos:"noun",cat:"rare",defs:[{d:"Finding valuable things by chance.",x:null}],etym:"Coined by Horace Walpole 1754."}
-};
-
-const LISTS = {
-all: Object.keys(LOCAL).concat(["abandon","abate","aberration","abhor","abolish","abound","abridge","abscond","absolve","abstain","abstract","absurd","abundance","abyss","accolade","accomplish","accumulate","acme","acquire","acrimony","adamant","adept","admonish","adroit","adulation","advent","adversary","adversity","advocate","aesthetic","affable","afflict","affluent","aftermath","aggravate","agile","agnostic","agony","alchemy","algorithm","alleviate","altruism","amalgam","ambiguity","ambition","ameliorate","amnesty","amorphous","anachronism","anarchy","anguish","annihilate","anomaly","antagonist","antidote","antiquated","antithesis","apathy","apex","apocalypse","arbitrary","arcane","archaic","archetype","ardent","arduous","arrogant","arsenal","articulate","artifact","ascend","ascertain","aspire","assiduous","atone","audacious","augment","auspicious","austere","autonomous","avarice","axiom","azure"]),
-sanskrit: Object.keys(LOCAL).filter(k => LOCAL[k].cat === 'sanskrit'),
-power: Object.keys(LOCAL).filter(k => LOCAL[k].cat === 'power'),
-philosophy: Object.keys(LOCAL).filter(k => LOCAL[k].cat === 'philosophy'),
-rare: Object.keys(LOCAL).filter(k => LOCAL[k].cat === 'rare')
-};
-
-LISTS.all = [...new Set(LISTS.all)];
-
-let activeFilter='all', wordHist=[], isLoading=false;
-
-const fLabels={all:`All (${LISTS.all.length})`,sanskrit:'🕉 Sanskrit',power:'⚡ Power',philosophy:'🏛 Philosophy',rare:'💎 Rare'};
-const fDiv=document.getElementById('filters');
-Object.keys(fLabels).forEach(k=>{
-  const c=document.createElement('div');c.className='fc'+(k==='all'?' on':'');c.textContent=fLabels[k];
-  c.onclick=()=>{fDiv.querySelectorAll('.fc').forEach(x=>x.classList.remove('on'));c.classList.add('on');activeFilter=k;};
-  fDiv.appendChild(c);
-});
-
-function generateWord(){if(isLoading)return;const l=LISTS[activeFilter];fetchWord(l[Math.floor(Math.random()*l.length)]);}
-function lookupWord(w){if(w&&!isLoading)fetchWord(w);}
-
-async function fetchWord(word){
-  isLoading=true;
-  const b=document.getElementById('genBtn');b.classList.add('ld');
-  b.innerHTML='<span style="animation:sn .5s linear infinite;display:inline-block">⚄</span> Searching...';
-  document.getElementById('content').innerHTML=`<div class="ls"><div class="sp"></div><div class="lt">Looking up <strong>${word}</strong>…</div></div>`;
-
-  if(LOCAL[word]){
-    renderLocal(word,LOCAL[word]);
-    addHist(word);
-    done();return;
-  }
-
-  try{
-    const r=await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
-    if(!r.ok)throw 0;
-    renderAPI((await r.json())[0],word);
-  }catch(e){renderFallback(word);}
-  addHist(word);done();
-}
-
-function done(){isLoading=false;const b=document.getElementById('genBtn');b.classList.remove('ld');b.innerHTML='<span>⚄</span> Generate Word';}
-
-function renderLocal(word,entry){
-  const catColors={sanskrit:'cat-sanskrit',power:'cat-power',philosophy:'cat-philosophy',rare:'cat-rare'};
-  const catNames={sanskrit:'Sanskrit',power:'Power',philosophy:'Philosophy',rare:'Rare'};
-  const posMap={noun:'pn',verb:'pv',adjective:'pa',adverb:'pd'};
-
-  let h=`<div class="wc"><div class="wm"><span class="wt">${word}</span>`;
-  if(entry.cat)h+=`<span class="cattag ${catColors[entry.cat]||''}">${catNames[entry.cat]||entry.cat}</span>`;
-  h+=`</div>`;
-
-  const pc=posMap[entry.pos]||'px';
-  h+=`<span class="pt ${pc}">${entry.pos}</span>`;
-
-  h+=`<div style="margin-bottom:.8rem">`;
-  entry.defs.forEach((d,i)=>{
-    h+=`<div class="df"><span class="dn">${i+1}.</span> ${d.d}</div>`;
-    if(d.x)h+=`<div class="ex">"${d.x}"</div>`;
-  });
-  h+=`</div>`;
-
-  if(entry.etym){
-    h+=`<div class="sec"><div class="sl">Etymology</div><div class="et">${entry.etym}</div></div>`;
-  }
-
-  h+=`</div>`;
-  document.getElementById('content').innerHTML=h;
-}
-
-function renderAPI(e,ow){
-  const w=e.word||ow;
-  let h=`<div class="wc"><div class="wm"><span class="wt">${w}</span></div>`;
-  e.meanings?.forEach(m=>{
-    const p=m.partOfSpeech||'',c=({noun:'pn',verb:'pv',adjective:'pa',adverb:'pd'})[p]||'px';
-    h+=`<span class="pt ${c}">${p}</span><div style="margin-bottom:.8rem">`;
-    m.definitions.slice(0,5).forEach((d,i)=>{
-      h+=`<div class="df"><span class="dn">${i+1}.</span> ${d.definition}</div>`;
-      if(d.example)h+=`<div class="ex">"${d.example}"</div>`;
-    });h+=`</div>`;
-  });
-  h+=`</div>`;
-  document.getElementById('content').innerHTML=h;
-}
-
-function renderFallback(w){
-  let h=`<div class="wc"><div class="wm"><span class="wt">${w}</span></div><div class="df">Word not found in dictionary.</div></div>`;
-  document.getElementById('content').innerHTML=h;
-}
-
-function addHist(w){
-  wordHist=wordHist.filter(x=>x!==w);wordHist.unshift(w);
-  if(wordHist.length>40)wordHist.pop();
-  document.getElementById('historySection').style.display='block';
-  document.getElementById('historyList').innerHTML=wordHist.map(x=>`<span class="hw" onclick="lookupWord('${x}')">${x}</span>`).join('');
-}
-
-let cutMethod='classic';
-const M={classic:'Classic',sentence:'Sentence',fold:'Fold-In',column:'Column'};
-const mf=document.getElementById('methodFilters');
-Object.keys(M).forEach(k=>{const c=document.createElement('div');c.className='mc'+(k==='classic'?' on':'');c.textContent=M[k];c.onclick=()=>{mf.querySelectorAll('.mc').forEach(x=>x.classList.remove('on'));c.classList.add('on');cutMethod=k;};mf.appendChild(c);});
-
-function shuf(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
-
-function performCutup(){
-  const input=document.getElementById('cutupInput').value.trim();if(!input)return;
-  const words=input.split(/\s+/);let result='';
-  switch(cutMethod){
-    case'classic':result=shuf(words).join(' ');break;
-    case'sentence':result=input.split(/(?<=[.!?])\s+/).filter(s=>s.trim()).join(' ');break;
-    case'fold':{const m=Math.floor(words.length/2);result=[...words.slice(0,m),...words.slice(m)].join(' ');break;}
-    case'column':result=shuf(words).join(' ');break;
-  }
-  const o=document.getElementById('cutupOutput'),re=document.getElementById('cutupResult');
-  o.style.display='block';re.textContent=result;
-  document.getElementById('cutupStats').textContent=`${words.length} words`;
-}
-
-function copyOutput(){const t=document.getElementById('cutupResult').textContent;if(!t)return;navigator.clipboard?.writeText(t);}
-
-function injectWords(){const ta=document.getElementById('cutupInput');ta.value=ta.value+' '+LISTS.power[Math.floor(Math.random()*LISTS.power.length)];}
-
-function switchTab(n){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));document.querySelector(`.tab[onclick*="${n}"]`).classList.add('on');document.getElementById(`panel-${n}`).classList.add('on');}
-</script>
+    <header>
+        <h1>Lexicon Word Generator</h1>
+    </header>
+    <main>
+        <section id="word-generation">
+            <h2>Generate a Word</h2>
+            <select id="category-selector">
+                <option value="">Select Category</option>
+                <!-- Add 100+ categories here -->
+            </select>
+            <button id="generate-btn">Generate</button>
+            <p id="generated-word"></p>
+        </section>
+        <section id="word-filters">
+            <h2>Filters</h2>
+            <label><input type="checkbox" value="sanskrit"> Sanskrit</label>
+            <label><input type="checkbox" value="power"> Power</label>
+            <label><input type="checkbox" value="philosophy"> Philosophy</label>
+            <label><input type="checkbox" value="rare"> Rare</label>
+        </section>
+        <section id="local-dictionary">
+            <h2>Local Dictionary</h2>
+            <input type="text" id="dictionary-search" placeholder="Search for a word...">
+            <div id="word-definitions"></div>
+        </section>
+        <section id="api-lookups">
+            <h2>API Lookups</h2>
+            <input type="text" id="api-search" placeholder="Search word API..."><button id="api-btn">Lookup</button>
+            <div id="api-results"></div>
+        </section>
+        <section id="history-tracking">
+            <h2>History Tracking</h2>
+            <ul id="history-list"></ul>
+        </section>
+        <section id="cut-up-engine">
+            <h2>Cut-Up Engine</h2>
+            <select id="cut-up-method">
+                <option value="classic">Classic</option>
+                <option value="sentence">Sentence</option>
+                <option value="fold-in">Fold-In</option>
+                <option value="column">Column</option>
+                <option value="thirds">Thirds</option>
+                <option value="permutation">Permutation</option>
+            </select>
+            <button id="cut-up-btn">Generate Cut-Up</button>
+            <div id="cut-up-results"></div>
+        </section>
+        <section id="power-words">
+            <h2>Inject Power Words</h2>
+            <button id="inject-power-words-btn">Inject</button>
+        </section>
+    </main>
+    <footer>
+        <p>Lexicon Word Generator © 2026</p>
+    </footer>
+    <script src="script.js"></script>
 </body>
 </html>
